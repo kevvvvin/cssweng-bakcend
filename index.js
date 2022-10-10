@@ -111,12 +111,15 @@ function summarySetup(workbook) {
 
 // Compiles data per row
 // TODO: cells dont have formulas implemented yet
-function compileData() {
+function compileData(data) {
+
+    //sheet setup
+    let sheet = summarySetup(wb2)
     
     let days = loadDays(wb).map(s => {return s.name})
     let rowIndex = 10
     days.forEach(day => {
-        players.forEach(player => {
+        data.forEach(player => {
             player.bets.forEach(bet => {
                 if (day == bet.day) {
     
@@ -130,10 +133,10 @@ function compileData() {
     
                     // Initialize each row
                     let rowData = [bet.day, player.name, team, bet.result, bet.amount, winLose, tong, total, comm, player.comm, result]
-                    summarySheet.getRow(rowIndex).values = rowData
+                    sheet.getRow(rowIndex).values = rowData
     
                     // Change com% column values to percentage format
-                    summarySheet.getCell(rowIndex, 10).numFmt = '0.00%'
+                    sheet.getCell(rowIndex, 10).numFmt = '0.00%'
     
                     // move to next row
                     rowIndex++
@@ -158,8 +161,6 @@ console.log(players[0])
 // TODO: WEDNESDAY MIKE FOREIGN 269,000 CELL ISN'T BEING READ CUZ FORMULA
 
 const wb2 = new ExcelJS.Workbook()
-
-let summarySheet = summarySetup(wb2)
-compileData()
+compileData(players)
 
 await wb2.xlsx.writeFile("public/test2.xlsx");
